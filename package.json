@@ -1,0 +1,23 @@
+{
+  "name": "james-pi-plugins",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Personal extensions, skills, and prompts for Pi",
+  "keywords": [
+    "pi-package"
+  ],
+  "pi": {
+    "extensions": [
+      "./extensions/*.ts"
+    ],
+    "skills": [
+      "./skills"
+    ],
+    "prompts": [
+      "./prompts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  }
+}
