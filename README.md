@@ -14,6 +14,16 @@ Pi records the local path in `~/.pi/agent/settings.json`, so edits are picked up
 
 Pi transpiles TypeScript extensions with its bundled `jiti` loader. Neither `tsx` nor a globally installed TypeScript compiler is required at runtime.
 
+## Development
+
+Enter the Nix development shell to get Node.js, npm, TypeScript, the TypeScript language server, and Prettier:
+
+```sh
+nix develop
+```
+
+Format Nix files with `nix fmt`.
+
 ## Extensions
 
 ### GSD mode
