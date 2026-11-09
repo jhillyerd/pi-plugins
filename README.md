@@ -37,6 +37,19 @@ Format Nix files with `nix fmt`.
 
 GSD defaults to off for new sessions, forks, and clones. The selected state persists across reloads and resumes within the same session.
 
+### direnv
+
+`extensions/direnv.ts` gives Pi's shell commands the same direnv environment an interactive shell would have, even when Pi was not started from the project directory (for example under agent orchestrators).
+
+- On session start, and again after each agent run, it runs `direnv export json` in the session directory and applies the result to Pi's process environment. Loading does not block startup.
+- Every `bash` tool call and `!`/`!!` command gets a one-line preamble that runs the direnv hook and wraps `cd`, `pushd`, and `popd`, so `cd ~/other/project && make` picks up that project's `.envrc`. The preamble is added in the spawn hook, so the model and transcript only see the original command.
+- Cost: about 3–4 ms per command when the environment is already loaded, and about 120 ms for a command that `cd`s into a different project (with a warm nix-direnv cache).
+- The footer shows `direnv: <dir>`, `direnv: blocked`, or `direnv: error`.
+- Git worktrees inherit approval from the main checkout. direnv keys approvals on the `.envrc` path, so worktrees created by agents start out blocked. When an export fails, the extension runs `direnv allow` on a linked worktree's `.envrc` only if direnv reports it as not allowed (never denied), the main checkout has an `.envrc` at the same relative path with identical contents, and direnv reports the main checkout's `.envrc` as allowed. Any other blocked `.envrc` needs `direnv allow`.
+- `/direnv` or `/direnv reload` reloads; `/direnv status` reports the current state.
+
+This replaces the built-in `bash` tool, so it conflicts with other extensions that also override `bash`.
+
 ## Layout
 
 - `extensions/` — TypeScript or JavaScript Pi extensions
