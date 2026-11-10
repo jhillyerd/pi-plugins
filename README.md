@@ -52,13 +52,14 @@ This replaces the built-in `bash` tool, so it conflicts with other extensions th
 
 ## Skills
 
-Skill directories under `skills/` are a subset of
-[tstack](https://github.com/t3dotgg/tstack) (Theo Browne's daily-driver agent
-skills), vendored unmodified at commit `1085050`. `council` and `sol-loop` are
-intentionally omitted:
+Skills under `skills/` are either written here (`smart-loop`) or vendored
+unmodified from [tstack](https://github.com/t3dotgg/tstack) (Theo Browne's
+daily-driver agent skills) at commit `1085050`. `council` and `sol-loop` are
+intentionally omitted from the vendored set:
 
 | Skill | Say | What it does |
 |---|---|---|
+| `smart-loop` | "smart loop" | Reviews a change with the internal bifrost/smart model (medium thinking, read-only headless Pi) in a loop until it approves. |
 | `full-send` | "full send" | Takes a change to a merged PR with nobody watching: proves it, reviews it, files it, babysits it, merges it. |
 | `full-stop` | "full stop" | Same as `full-send`, but stops when the PR is ready for you to merge. |
 | `file-pr` | "file a PR" | Files a short PR that leads with the problem, not an inventory of changes. |
@@ -67,20 +68,23 @@ intentionally omitted:
 | `modernize` | "modernize" | Rebases an old PR and decides if it should still exist. |
 | `leaving-pr-comments` | (automatic) | Formats comments that an agent posts on your behalf. |
 
-Some skills call others (`full-send` → `file-pr`, `babysit-pr`;
+Some skills call others (`full-send` → `smart-loop`, `file-pr`, `babysit-pr`;
 `full-stop` → `full-send`; `takeover` → `modernize`, `file-pr`, `babysit-pr`,
-`leaving-pr-comments`), so they are kept together. Upstream `full-send` also
-calls the omitted `sol-loop` for its review step; without it, that step falls
-back to your agent's own review.
+`leaving-pr-comments`), so they are kept together. Requires an internal
+bifrost provider configured in Pi's models.json (`bifrost/smart`) for
+`smart-loop`.
 
 These skills require an authenticated [GitHub CLI](https://cli.github.com)
 (`gh`), and `babysit-pr` additionally needs `python3`.
 
 ## Attribution
 
-- `skills/` — © Theo Browne, MIT licensed; vendored from
+- `skills/` (vendored subset) — © Theo Browne, MIT licensed; from
   [t3dotgg/tstack](https://github.com/t3dotgg/tstack). See
-  [`licenses/tstack-LICENSE`](licenses/tstack-LICENSE).
+  [`licenses/tstack-LICENSE`](licenses/tstack-LICENSE). Local patch:
+  `full-send/SKILL.md` references our `smart-loop` where upstream uses the
+  omitted `sol-loop`.
+- `skills/smart-loop/` — written here; no third-party claims.
 
 ## Layout
 
