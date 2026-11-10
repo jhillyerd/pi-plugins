@@ -50,8 +50,41 @@ GSD defaults to off for new sessions, forks, and clones. The selected state pers
 
 This replaces the built-in `bash` tool, so it conflicts with other extensions that also override `bash`.
 
+## Skills
+
+Skill directories under `skills/` are a subset of
+[tstack](https://github.com/t3dotgg/tstack) (Theo Browne's daily-driver agent
+skills), vendored unmodified at commit `1085050`. `council` and `sol-loop` are
+intentionally omitted:
+
+| Skill | Say | What it does |
+|---|---|---|
+| `full-send` | "full send" | Takes a change to a merged PR with nobody watching: proves it, reviews it, files it, babysits it, merges it. |
+| `full-stop` | "full stop" | Same as `full-send`, but stops when the PR is ready for you to merge. |
+| `file-pr` | "file a PR" | Files a short PR that leads with the problem, not an inventory of changes. |
+| `takeover` | "take over" | Finishes someone else's PR, branch, or agent thread, and keeps their credit. |
+| `babysit-pr` | "babysit" | Watches a PR through CI and review bots, and fixes the real findings. |
+| `modernize` | "modernize" | Rebases an old PR and decides if it should still exist. |
+| `leaving-pr-comments` | (automatic) | Formats comments that an agent posts on your behalf. |
+
+Some skills call others (`full-send` → `file-pr`, `babysit-pr`;
+`full-stop` → `full-send`; `takeover` → `modernize`, `file-pr`, `babysit-pr`,
+`leaving-pr-comments`), so they are kept together. Upstream `full-send` also
+calls the omitted `sol-loop` for its review step; without it, that step falls
+back to your agent's own review.
+
+These skills require an authenticated [GitHub CLI](https://cli.github.com)
+(`gh`), and `babysit-pr` additionally needs `python3`.
+
+## Attribution
+
+- `skills/` — © Theo Browne, MIT licensed; vendored from
+  [t3dotgg/tstack](https://github.com/t3dotgg/tstack). See
+  [`licenses/tstack-LICENSE`](licenses/tstack-LICENSE).
+
 ## Layout
 
 - `extensions/` — TypeScript or JavaScript Pi extensions
 - `skills/` — skill directories containing `SKILL.md`
 - `prompts/` — Markdown prompt templates
+- `licenses/` — third-party license texts
