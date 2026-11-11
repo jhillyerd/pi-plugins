@@ -7,8 +7,9 @@ description: Review a change with the internal bifrost/smart model in a loop unt
 
 Make code changes more correct before (or after) filing a pull request, by
 having an independent reviewer — the internal bifrost `smart` model at medium
-thinking, run as a fresh headless Pi with read-only tools — critique the diff
-in rounds.
+thinking, run with read-only tools — critique the diff in rounds. Inside
+t3code the reviewer is a `delegate_task` (§2a). Anywhere else it is a fresh
+headless Pi (§2b).
 
 Make the most minimal possible changes to appease the reviewer. Be careful of
 scope creep and don't be scared to push back.
@@ -48,6 +49,30 @@ Note missing or pre-failing checks in the brief.
 
 ## 2. Run the reviewer
 
+### 2a. In t3code: delegate_task
+
+When running inside t3code, start the reviewer with `delegate_task` instead
+of the headless Pi below.
+
+- Call `orchestrator_capabilities` once before the first `delegate_task`
+  (again only after an error or a user-named provider change). Pass the
+  bifrost `smart` model in `target`, with medium effort or the closest
+  option offered.
+- One `delegate_task` per round: `role: "review"`, `mode: "wait"` (the loop
+  needs each verdict before continuing), pass `timeoutMs` of at least 15
+  minutes (900000 — this model tends to overthink). Leave `isolation` shared
+  so the reviewer reads this checkout. Never `t3_thread_send` to a finished
+  child.
+- The delegate is a full agent and receives only the `task` text. Carry the
+  read-only constraints into the brief verbatim, include `git status
+  --short` and check results, and have it run the diff command itself (see
+  below) — do not paste the diff into the task.
+- Read the verdict from `task_status` `summary`. A timeout, error, or empty
+  summary is not approval. A timeout does not cancel the child: `task_cancel`
+  it before re-running that round.
+
+### 2b. Elsewhere: headless Pi
+
 The reviewer is a headless Pi: read-only tools, no extensions, no skills. It
 cannot edit the repo, only read it.
 
@@ -83,9 +108,14 @@ S1 [blocker|should|nit] <file>:<line> <claim>. Fix: <suggestion>
 Use stable ids (S1, S2, ...) across rounds.
 ```
 
-Give the command a generous timeout (10 minutes or more); a long review is
-normal. Do not edit scoped files while it runs — wait for it. A timeout,
-error, or empty reply is not approval: re-run the round.
+In t3code (§2a), replace the brief's first sentence with: "Run `git diff
+<base> -- <paths>` (base to working tree) first. Read surrounding code with
+your tools." The diff does not precede the brief — the reviewer runs the
+command itself.
+
+Give the headless command a generous timeout (15 minutes or more); a long
+review is normal. Do not edit scoped files while a reviewer runs — wait for
+it. A timeout, error, or empty reply is not approval: re-run the round.
 
 ## 3. Answer findings
 
@@ -105,7 +135,8 @@ grew the diff, cut first. Do not agree just to end the loop.
 
 Start one only if budget remains and a blocker or should is open, behavior
 code changed, or approval does not cover the current behavior diff. Re-run
-the round-1 command with the same base, and extend the brief with the ledger
+the round-1 reviewer (§2a in t3code, §2b otherwise) with the same base, and
+extend the brief with the ledger
 (`fixed:` / `disagree:` / `declined:` + evidence) and which ids are resolved
 and which remain open.
 
