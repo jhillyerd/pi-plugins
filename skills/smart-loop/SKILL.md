@@ -59,9 +59,10 @@ of the headless Pi below.
   bifrost `smart` model in `target`, with medium effort or the closest
   option offered.
 - One `delegate_task` per round: `role: "review"`, `mode: "wait"` (the loop
-  needs each verdict before continuing), pass a generous `timeoutMs`
-  (default 10 minutes). Leave `isolation` shared so the reviewer reads this
-  checkout. Never `t3_thread_send` to a finished child.
+  needs each verdict before continuing), pass `timeoutMs` of at least 15
+  minutes (900000 — this model tends to overthink). Leave `isolation` shared
+  so the reviewer reads this checkout. Never `t3_thread_send` to a finished
+  child.
 - The delegate is a full agent and receives only the `task` text. Carry the
   read-only constraints into the brief verbatim, include `git status
   --short` and check results, and have it run the diff command itself (see
@@ -112,7 +113,7 @@ In t3code (§2a), replace the brief's first sentence with: "Run `git diff
 your tools." The diff does not precede the brief — the reviewer runs the
 command itself.
 
-Give the headless command a generous timeout (10 minutes or more); a long
+Give the headless command a generous timeout (15 minutes or more); a long
 review is normal. Do not edit scoped files while a reviewer runs — wait for
 it. A timeout, error, or empty reply is not approval: re-run the round.
 
