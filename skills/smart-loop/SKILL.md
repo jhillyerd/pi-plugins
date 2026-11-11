@@ -1,15 +1,14 @@
 ---
 name: smart-loop
-description: Review a change with the internal bifrost/smart model in a loop until it approves. Use when the user says "smart loop" or asks for an internal-model review loop before filing or merging.
+description: Review a change with a parallel LLM in a loop until it approves. Use when the user says "smart loop" before filing or merging.
 ---
 
 # smart loop
 
 Make code changes more correct before (or after) filing a pull request, by
-having an independent reviewer — the internal bifrost `smart` model at low
-thinking, run with read-only tools — critique the diff in rounds. Inside
-t3code the reviewer is a `delegate_task` (§2a). Anywhere else it is a fresh
-headless Pi (§2b).
+having an independent reviewer — the glm-5.3 model, run with read-only tools —
+critique the diff in rounds. Inside t3code the reviewer is a `delegate_task`
+(§2a). Anywhere else it is a fresh headless Pi (§2b).
 
 Make the most minimal possible changes to appease the reviewer. Be careful of
 scope creep and don't be scared to push back.
@@ -56,8 +55,7 @@ of the headless Pi below.
 
 - Call `orchestrator_capabilities` once before the first `delegate_task`
   (again only after an error or a user-named provider change). Pass the
-  bifrost `smart` model in `target`, with low effort or the closest
-  option offered.
+  `glm-5.3` model in `target`.
 - One `delegate_task` per round: `role: "review"`, `mode: "wait"` (the loop
   needs each verdict before continuing), pass `timeoutMs` of at least 15
   minutes (900000 — this model tends to overthink). Leave `isolation` shared
@@ -78,7 +76,7 @@ cannot edit the repo, only read it.
 
 ```bash
 git diff <base> -- <paths> | pi --print --no-extensions \
-  --model bifrost/smart --thinking low \
+  --model zai/glm-5.3 --thinking high \
   --tools read,grep,find,ls \
   -- "<brief>"
 ```
@@ -150,7 +148,7 @@ is not approval.
 Do not push during the loop. Push after agreement only if the user asked to
 push, ship, or update the PR. If you push to a PR, add above the model blurb:
 
-`Reviewed with smart-loop: <N> rounds with bifrost/smart on low thinking.
+`Reviewed with smart-loop: <N> rounds with <model name> on <effort> thinking.
 Reviewer verdict: approved.`
 
 Report: rounds, what you changed, diff size before/after, fixed and declined
