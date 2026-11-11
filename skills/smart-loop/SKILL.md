@@ -6,7 +6,7 @@ description: Review a change with the internal bifrost/smart model in a loop unt
 # smart loop
 
 Make code changes more correct before (or after) filing a pull request, by
-having an independent reviewer — the internal bifrost `smart` model at medium
+having an independent reviewer — the internal bifrost `smart` model at low
 thinking, run with read-only tools — critique the diff in rounds. Inside
 t3code the reviewer is a `delegate_task` (§2a). Anywhere else it is a fresh
 headless Pi (§2b).
@@ -56,7 +56,7 @@ of the headless Pi below.
 
 - Call `orchestrator_capabilities` once before the first `delegate_task`
   (again only after an error or a user-named provider change). Pass the
-  bifrost `smart` model in `target`, with medium effort or the closest
+  bifrost `smart` model in `target`, with low effort or the closest
   option offered.
 - One `delegate_task` per round: `role: "review"`, `mode: "wait"` (the loop
   needs each verdict before continuing), pass `timeoutMs` of at least 15
@@ -78,7 +78,7 @@ cannot edit the repo, only read it.
 
 ```bash
 git diff <base> -- <paths> | pi --print --no-extensions \
-  --model bifrost/smart --thinking medium \
+  --model bifrost/smart --thinking low \
   --tools read,grep,find,ls \
   -- "<brief>"
 ```
@@ -150,7 +150,7 @@ is not approval.
 Do not push during the loop. Push after agreement only if the user asked to
 push, ship, or update the PR. If you push to a PR, add above the model blurb:
 
-`Reviewed with smart-loop: <N> rounds with bifrost/smart on medium thinking.
+`Reviewed with smart-loop: <N> rounds with bifrost/smart on low thinking.
 Reviewer verdict: approved.`
 
 Report: rounds, what you changed, diff size before/after, fixed and declined
