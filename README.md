@@ -59,7 +59,7 @@ intentionally omitted from the vendored set:
 
 | Skill | Say | What it does |
 |---|---|---|
-| `smart-loop` | "smart loop" | Reviews a change with the internal bifrost/smart model (medium thinking, read-only headless Pi) in a loop until it approves. |
+| `smart-loop` | "smart loop" | Reviews a change with another LLM in a loop until it approves. |
 | `full-send` | "full send" | Takes a change to a merged PR with nobody watching: proves it, reviews it, files it, babysits it, merges it. |
 | `full-stop` | "full stop" | Same as `full-send`, but stops when the PR is ready for you to merge. |
 | `file-pr` | "file a PR" | Files a short PR that leads with the problem, not an inventory of changes. |
@@ -70,9 +70,7 @@ intentionally omitted from the vendored set:
 
 Some skills call others (`full-send` → `smart-loop`, `file-pr`, `babysit-pr`;
 `full-stop` → `full-send`; `takeover` → `modernize`, `file-pr`, `babysit-pr`,
-`leaving-pr-comments`), so they are kept together. Requires an internal
-bifrost provider configured in Pi's models.json (`bifrost/smart`) for
-`smart-loop`.
+`leaving-pr-comments`).
 
 These skills require an authenticated [GitHub CLI](https://cli.github.com)
 (`gh`), and `babysit-pr` additionally needs `python3`.
