@@ -68,6 +68,12 @@ of the headless Pi below.
 - Read the verdict from `task_status` `summary`. A timeout, error, or empty
   summary is not approval. A timeout does not cancel the child: `task_cancel`
   it before re-running that round.
+- A `fetch failed` return from `delegate_task` is not a dead delegate: the
+  caller's transport failed while the child often keeps running. Inspect the
+  session output (`task_status`, or read the child thread) before deciding —
+  if it is still running, wait for it as usual; only re-run the round (after
+  `task_cancel`) if the session is genuinely gone. Re-running while the
+  original still runs violates one-reviewer-at-a-time.
 
 ### 2b. Elsewhere: headless Pi
 
