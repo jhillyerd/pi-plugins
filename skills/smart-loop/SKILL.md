@@ -6,7 +6,7 @@ description: Review a change with a parallel LLM in a loop until it approves. Us
 # smart loop
 
 Make code changes more correct before (or after) filing a pull request, by
-having an independent reviewer — the glm-5.3 model, run with read-only tools —
+having an independent reviewer — the deepseek-v4-pro model, run with read-only tools —
 critique the diff in rounds. Inside t3code the reviewer is a `delegate_task`
 (§2a). Anywhere else it is a fresh headless Pi (§2b).
 
@@ -55,7 +55,7 @@ of the headless Pi below.
 
 - Call `orchestrator_capabilities` once before the first `delegate_task`
   (again only after an error or a user-named provider change). Pass the
-  `glm-5.3` model in `target`.
+  `deepseek-v4-pro` model in `target`.
 - One `delegate_task` per round: `role: "review"`, `mode: "wait"` (the loop
   needs each verdict before continuing), pass `timeoutMs` of at least 15
   minutes (900000 — this model tends to overthink). Leave `isolation` shared
@@ -82,7 +82,7 @@ cannot edit the repo, only read it.
 
 ```bash
 git diff <base> -- <paths> | pi --print --no-extensions \
-  --model zai/glm-5.3 --thinking high \
+  --model deepseek/deepseek-v4-pro --thinking high \
   --tools read,grep,find,ls \
   -- "<brief>"
 ```
